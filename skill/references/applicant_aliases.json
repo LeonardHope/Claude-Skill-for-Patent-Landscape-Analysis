@@ -1,0 +1,5 @@
+{
+  "_description": "Hand-curated applicant alias table. Grows over time as the user runs reports and notices that distinct name variants refer to the same entity. The 'canonical' value is the display name shown in the report; 'variants' are alternate names that should resolve to it. All comparisons are done on uppercase, suffix-stripped forms.",
+  "_format": "aliases is a list so order is preserved and conflicts are obvious. Each entry: { canonical: '...', variants: ['...', '...'] }. Variants should be the uppercase, suffix-stripped form after normalize_applicant() runs.",
+  "aliases": []
+}

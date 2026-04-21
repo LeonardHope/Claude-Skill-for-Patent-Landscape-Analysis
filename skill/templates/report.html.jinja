@@ -1,0 +1,3085 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ query_label }}</title>
+  <style>
+    /* ===== Theme tokens ===== */
+    :root {
+      /* Surfaces */
+      --bg: #0f1419;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --surface-panel: #ffffff;
+      --border: #e5e7eb;
+      --border-strong: #cbd5e0;
+      --border-subtle: #f1f5f9;
+      /* Text */
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --text-on-dark: #f8fafc;
+      /* Brand palette (5-color system) */
+      --c-blue: #0062b8;
+      --c-blue-deep: #003a6b;
+      --c-blue-light: #4ea5e0;
+      --c-blue-pale: #e0ecf9;
+      --c-teal: #0d9488;
+      --c-teal-light: #14b8a6;
+      --c-teal-pale: #ccfbf1;
+      --c-amber: #f59e0b;
+      --c-amber-light: #fbbf24;
+      --c-amber-pale: #fef3c7;
+      --c-rose: #e11d48;
+      --c-rose-light: #f43f5e;
+      --c-rose-pale: #ffe4e6;
+      --c-violet: #7c3aed;
+      --c-violet-light: #a78bfa;
+      --c-violet-pale: #ede9fe;
+      /* Legacy aliases (some CSS still references these) */
+      --accent: var(--c-blue-deep);
+      --accent-dark: #00264a;
+      --accent-mid: var(--c-blue);
+      --accent-light: var(--c-blue-light);
+      --accent-pale: var(--c-blue-pale);
+      --accent-glow: rgba(0, 58, 107, 0.12);
+      --amber: var(--c-amber);
+      --amber-pale: var(--c-amber-pale);
+      /* Neutrals */
+      --grid: #f1f5f9;
+      --danger: #b91c1c;
+      --success: #047857;
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(15,23,42,0.04), 0 1px 3px rgba(15,23,42,0.05);
+      --shadow-md: 0 4px 12px -2px rgba(15,23,42,0.08), 0 2px 4px -1px rgba(15,23,42,0.04);
+      --shadow-lg: 0 20px 40px -12px rgba(15,23,42,0.18), 0 12px 20px -8px rgba(15,23,42,0.08);
+      --shadow-tile: 0 1px 3px rgba(15,23,42,0.06), 0 4px 12px -2px rgba(15,23,42,0.04);
+      --shadow-tile-hover: 0 12px 28px -6px rgba(0,58,107,0.18), 0 4px 8px rgba(0,58,107,0.08);
+      /* Radii */
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-sm: 8px;
+      /* Chart palette — full multi-color range */
+      --chart-palette-0: #0062b8;
+      --chart-palette-1: #14b8a6;
+      --chart-palette-2: #f59e0b;
+      --chart-palette-3: #7c3aed;
+      --chart-palette-4: #f43f5e;
+      --chart-palette-5: #4ea5e0;
+      --chart-palette-6: #10b981;
+      --chart-palette-7: #fb923c;
+      --chart-palette-8: #a78bfa;
+    }
+
+    /* ===== Base ===== */
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f1f3f7;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.55;
+      font-size: 16px;
+      font-feature-settings: "cv11", "ss01", "ss03";
+    }
+    /* Serif display font — falls back to system serifs (New York on macOS,
+       Cambria on Windows, Georgia otherwise). */
+    .display-serif {
+      font-family: ui-serif, 'New York', 'Iowan Old Style', 'Palatino Linotype',
+                   'Book Antiqua', Palatino, Cambria, Georgia, serif;
+      font-feature-settings: "lnum";
+    }
+    h1, h2, h3, h4 {
+      margin: 0;
+      color: var(--text-primary);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    h1 { font-size: 32px; line-height: 1.15; font-weight: 700; letter-spacing: -0.03em; }
+    h2 { font-size: 26px; line-height: 1.2; letter-spacing: -0.025em; }
+    h3 { font-size: 15px; line-height: 1.3; }
+    p { margin: 0; }
+    a { color: var(--accent); text-decoration: none; transition: color 120ms; }
+    a:hover { color: var(--accent-mid); text-decoration: underline; text-underline-offset: 2px; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* Fade-in on initial load */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .report-section {
+      animation: fadeUp 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .report-section:nth-child(1) { animation-delay: 0ms; }
+    .report-section:nth-child(2) { animation-delay: 60ms; }
+    .report-section:nth-child(3) { animation-delay: 120ms; }
+    .report-section:nth-child(4) { animation-delay: 180ms; }
+    .report-section:nth-child(5) { animation-delay: 240ms; }
+    .report-section:nth-child(6) { animation-delay: 300ms; }
+    .report-section:nth-child(7) { animation-delay: 360ms; }
+
+    /* ===== Header ===== */
+    /* ===== HERO (dark) ===== */
+    .report-header {
+      position: relative;
+      padding: 80px 0 72px;
+      background:
+        radial-gradient(ellipse 1000px 500px at 15% 0%, rgba(78, 165, 224, 0.18), transparent 60%),
+        radial-gradient(ellipse 800px 400px at 90% 100%, rgba(217, 119, 6, 0.10), transparent 60%),
+        linear-gradient(160deg, #0a1628 0%, #0f2847 35%, #112e52 70%, #0c1e3a 100%);
+      color: #f1f5f9;
+      overflow: hidden;
+    }
+    /* Subtle dot grid overlay */
+    .report-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    .report-header::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #4ea5e0 0%, #0062b8 30%, #003a6b 60%, #d97706 100%);
+    }
+    .header-inner {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+    .report-kicker {
+      font-size: 14px;
+      color: #4ea5e0;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      font-weight: 800;
+      margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .report-kicker::before {
+      content: "";
+      width: 40px;
+      height: 2px;
+      background: #4ea5e0;
+    }
+    .report-title-block h1 {
+      /* Modern display sans — SF Pro Display on macOS, Segoe UI on Windows */
+      font-family: system-ui, -apple-system, 'SF Pro Display', 'Segoe UI',
+                   'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 60px;
+      line-height: 1;
+      margin-bottom: 18px;
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      max-width: 22ch;
+      text-wrap: balance;
+    }
+    @media (max-width: 760px) { .report-title-block h1 { font-size: 40px; } }
+    /* Accent underline under the title for color pop */
+    .title-accent-bar {
+      display: block;
+      height: 4px;
+      width: 120px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #4ea5e0 0%, #14b8a6 50%, #f59e0b 100%);
+      margin-bottom: 24px;
+    }
+    .report-subtitle {
+      font-size: 17px;
+      color: rgba(241, 245, 249, 0.72);
+      margin-bottom: 48px;
+      font-weight: 400;
+      max-width: 60ch;
+      line-height: 1.55;
+    }
+
+    /* Hero narrative pullquote */
+    .hero-narrative {
+      font-family: system-ui, -apple-system, 'SF Pro Display', 'Segoe UI',
+                   'Inter', 'Helvetica Neue', sans-serif;
+      font-size: 22px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.95);
+      font-weight: 500;
+      letter-spacing: -0.018em;
+      max-width: 68ch;
+      margin-bottom: 52px;
+      padding-left: 22px;
+      border-left: 4px solid transparent;
+      border-image: linear-gradient(180deg, #4ea5e0 0%, #14b8a6 50%, #f59e0b 100%) 1;
+      white-space: pre-line;
+    }
+    .hero-narrative::first-line { font-weight: 600; }
+    @media (max-width: 760px) { .hero-narrative { font-size: 18px; } }
+
+    /* Hero stat tiles (dark variant, colored accents) */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 900px) { .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .hero-stats { grid-template-columns: 1fr; } }
+    .hero-stat {
+      position: relative;
+      background: linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 28px 26px 26px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), border-color 260ms, background 260ms;
+      overflow: hidden;
+    }
+    /* Each tile gets a different accent color — cycle through the 4-color system */
+    .hero-stat:nth-child(1) { --accent-color: #4ea5e0; }
+    .hero-stat:nth-child(2) { --accent-color: #14b8a6; }
+    .hero-stat:nth-child(3) { --accent-color: #f59e0b; }
+    .hero-stat:nth-child(4) { --accent-color: #f43f5e; }
+    .hero-stat::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-color);
+      transform: scaleX(0.3);
+      transform-origin: left;
+      transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hero-stat::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 280px 180px at 20% 0%, var(--accent-color), transparent 60%);
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .hero-stat:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent-color) 40%, transparent);
+      background: linear-gradient(155deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%);
+    }
+    .hero-stat:hover::before { transform: scaleX(1); }
+    .hero-stat-label {
+      position: relative;
+      font-size: 10px;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .hero-stat-value {
+      position: relative;
+      font-family: system-ui, -apple-system, 'SF Pro Display', 'Segoe UI',
+                   'Inter', 'Helvetica Neue', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .hero-stat .why-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 99px;
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(241, 245, 249, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all 160ms;
+    }
+    .hero-stat .why-btn:hover {
+      background: #4ea5e0;
+      color: #0a1628;
+      border-color: #4ea5e0;
+      transform: scale(1.1);
+    }
+
+    /* Query context block inside hero */
+    .query-context {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 56px;
+      padding: 28px 32px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    @media (max-width: 760px) { .query-context { grid-template-columns: 1fr; gap: 20px; padding: 22px; } }
+    .qc-block-title {
+      font-size: 11px;
+      color: rgba(241, 245, 249, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .qc-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 4px 18px;
+      font-size: 15px;
+      padding: 8px 0;
+      line-height: 1.4;
+    }
+    .qc-row dt {
+      color: rgba(241, 245, 249, 0.6);
+      font-weight: 500;
+    }
+    .qc-row dd {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 500;
+    }
+    .qc-row code {
+      background: rgba(78, 165, 224, 0.18);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #a5d8f3;
+      font-family: 'SF Mono', ui-monospace, Consolas, monospace;
+      font-weight: 600;
+      margin-right: 4px;
+      border: 1px solid rgba(78, 165, 224, 0.25);
+    }
+
+    /* ===== Nav ===== */
+    .section-nav {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      gap: 28px;
+      overflow-x: auto;
+    }
+    .section-nav a {
+      padding: 16px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      text-decoration: none;
+      transition: color 160ms, border-color 160ms;
+    }
+    .section-nav a:hover {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom-color: var(--accent);
+    }
+
+    /* ===== Main ===== */
+    .report-main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 40px 64px;
+    }
+    .report-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 40px 44px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .report-section:hover { box-shadow: var(--shadow-md); }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .section-kicker {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-kicker::before {
+      content: "";
+      width: 20px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 99px;
+    }
+    /* Each section's kicker gets a different accent color */
+    #leaders .section-kicker { color: var(--c-blue); }
+    #geography .section-kicker { color: var(--c-teal); }
+    #trends .section-kicker { color: var(--c-amber); }
+    #technology .section-kicker { color: var(--c-violet); }
+    #notable .section-kicker { color: var(--c-rose); }
+    #methodology .section-kicker { color: #64748b; }
+    /* Section-specific accent strip at the top of each card */
+    .report-section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      opacity: 0.85;
+    }
+    #leaders::before { background: linear-gradient(90deg, var(--c-blue), var(--c-blue-light)); }
+    #geography::before { background: linear-gradient(90deg, var(--c-teal), var(--c-teal-light)); }
+    #trends::before { background: linear-gradient(90deg, var(--c-amber), var(--c-amber-light)); }
+    #technology::before { background: linear-gradient(90deg, var(--c-violet), var(--c-violet-light)); }
+    #notable::before { background: linear-gradient(90deg, var(--c-rose), var(--c-rose-light)); }
+    #methodology::before { background: linear-gradient(90deg, #475569, #94a3b8); }
+    .section-header h2 {
+      margin-bottom: 8px;
+      letter-spacing: -0.025em;
+      font-family: system-ui, -apple-system, 'SF Pro Display', 'Segoe UI',
+                   'Inter', 'Helvetica Neue', sans-serif;
+      font-weight: 700;
+    }
+    .section-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* ===== Hero action bar (Download + Help) ===== */
+    .hero-actions {
+      position: absolute;
+      top: 48px;
+      right: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 5;
+    }
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      background: linear-gradient(135deg, #4ea5e0 0%, #14b8a6 100%);
+      color: #0a1628;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(78, 165, 224, 0.25);
+      transition: transform 180ms, box-shadow 180ms;
+      font-family: inherit;
+    }
+    .download-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(78, 165, 224, 0.35);
+    }
+    .download-btn svg { width: 16px; height: 16px; }
+    .download-dropdown { position: relative; }
+    .download-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 240px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px -12px rgba(15,23,42,0.35), 0 12px 20px -8px rgba(15,23,42,0.15);
+      padding: 6px;
+      display: none;
+      z-index: 10;
+    }
+    .download-dropdown.open .download-menu { display: block; }
+    .download-menu button {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 160ms;
+    }
+    .download-menu button:hover { background: var(--surface-alt); }
+    .download-menu .item-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--c-blue-pale);
+      color: var(--c-blue);
+    }
+    .download-menu .item-icon svg { width: 16px; height: 16px; }
+    .download-menu .item-body { flex: 1; }
+    .download-menu .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .download-menu .item-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Help tooltip (?) */
+    .help-btn {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: help;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 160ms;
+    }
+    .help-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+    }
+    .help-tooltip {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 320px;
+      padding: 14px 16px;
+      background: #ffffff;
+      color: var(--text-secondary);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      box-shadow: 0 20px 40px -12px rgba(15,23,42,0.35);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 180ms, transform 180ms;
+      z-index: 20;
+      text-align: left;
+    }
+    .help-tooltip b { color: var(--text-primary); }
+    .help-btn:hover .help-tooltip,
+    .help-btn:focus .help-tooltip {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ===== Headline ===== */
+    .summary-block {
+      background:
+        linear-gradient(135deg, rgba(0,58,107,0.04) 0%, rgba(0,98,184,0.02) 100%);
+      border-left: 4px solid var(--accent);
+      padding: 28px 32px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .summary-text {
+      font-size: 18px;
+      color: var(--text-primary);
+      white-space: pre-line;
+      line-height: 1.65;
+      font-weight: 400;
+      letter-spacing: -0.005em;
+    }
+    .summary-text::first-line { font-weight: 500; }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 900px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-tile {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px 26px;
+      box-shadow: var(--shadow-tile);
+      transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms, border-color 200ms;
+      overflow: hidden;
+    }
+    .stat-tile::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-mid) 100%);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .stat-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-tile-hover);
+      border-color: var(--accent-light);
+    }
+    .stat-tile:hover::before { transform: scaleX(1); }
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .stat-value {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.035em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 130%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .why-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all 160ms;
+    }
+    .why-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    /* ===== Chart wrapper ===== */
+    .chart-wrap {
+      position: relative;
+      margin-top: 4px;
+    }
+    .chart-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .chart {
+      width: 100%;
+      min-height: 360px;
+    }
+    .chart-tall { min-height: 500px; }
+    .chart-short { min-height: 300px; }
+    .icon-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .icon-btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+    .icon-btn svg { width: 13px; height: 13px; }
+    .export-dropdown { position: relative; }
+    .export-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-md);
+      padding: 4px;
+      margin-top: 4px;
+      display: none;
+      min-width: 160px;
+      z-index: 10;
+    }
+    .export-dropdown.open .export-menu { display: block; }
+    .export-menu button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: left;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .export-menu button:hover { background: var(--surface-alt); color: var(--text-primary); }
+
+    /* ===== Geography footnote (regional offices) =====
+       Regional offices like EPO and WIPO can't be plotted on a country map
+       because they don't correspond to a single country. Rather than living
+       in a permanent sidebar (which was confusing — it looked like the right
+       half of the map "stuck" on Europe), they're now a small footnote row
+       directly below the map, framed as "additional filings not plotted". */
+    .map-footnote {
+      margin-top: 14px;
+      padding: 14px 18px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+    }
+    .map-footnote-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    .map-footnote-item {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 160ms;
+    }
+    .map-footnote-item:hover { background: var(--surface); }
+    .map-footnote-item strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .map-footnote-item .count {
+      font-variant-numeric: tabular-nums;
+      color: var(--c-teal);
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .map-footnote-help {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-left: auto;
+    }
+
+    /* ===== Notable patents table ===== */
+    .notable-criterion {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .notable-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .notable-table th {
+      text-align: left;
+      padding: 10px 14px;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+    .notable-table td {
+      padding: 14px;
+      border-bottom: 1px solid var(--grid);
+    }
+    .notable-table tr:last-child td { border-bottom: none; }
+    .notable-table .col-rank { width: 40px; color: var(--text-muted); font-weight: 700; }
+    .notable-table .col-count {
+      width: 80px;
+      text-align: right;
+      color: var(--c-rose);
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .notable-table .col-title { color: var(--text-primary); }
+    .notable-table .col-year { width: 60px; color: var(--text-muted); font-size: 13px; }
+    .notable-table .col-applicant { color: var(--text-secondary); font-size: 13px; }
+
+    /* ===== Methodology ===== */
+    .methodology-block { margin-bottom: 28px; }
+    .methodology-block:last-child { margin-bottom: 0; }
+    .methodology-block h3 {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .methodology-block p,
+    .methodology-block li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .methodology-block ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .methodology-block code {
+      background: var(--surface-alt);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'SF Mono', ui-monospace, Consolas, monospace;
+    }
+    /* Document type breakdown (methodology) */
+    .doctype-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .doctype-pill {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .doctype-pill::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: var(--c-blue);
+    }
+    .doctype-pill[data-kind="Granted patent"]::before { background: var(--c-teal); }
+    .doctype-pill[data-kind="Patent application"]::before { background: var(--c-blue); }
+    .doctype-pill[data-kind="Utility model"]::before { background: var(--c-amber); }
+    .doctype-pill[data-kind="Design patent"]::before { background: var(--c-violet); }
+    .doctype-pill[data-kind="Plant patent"]::before { background: var(--c-rose); }
+    .doctype-pill[data-kind="Unknown"]::before { background: #94a3b8; }
+    .doctype-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .doctype-count {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .doctype-share {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .merge-list {
+      max-height: 280px;
+      overflow-y: auto;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+    }
+    .merge-item {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .merge-item:last-child { border-bottom: none; }
+    .merge-canonical {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .merge-variants {
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-size: 12px;
+    }
+
+    /* ===== Receipts panel ===== */
+    .panel-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.35);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .panel-overlay.visible { opacity: 1; pointer-events: auto; }
+    .receipts-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 480px;
+      max-width: 95vw;
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+      z-index: 110;
+      transform: translateX(100%);
+      transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .receipts-panel.visible { transform: translateX(0); }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-close {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      color: var(--text-muted);
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .panel-close:hover { color: var(--text-primary); }
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 26px;
+    }
+    .panel-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      margin: 20px 0 8px;
+    }
+    .panel-label:first-child { margin-top: 0; }
+    .panel-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .panel-formula {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-family: 'SF Mono', ui-monospace, 'Consolas', monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .panel-quant {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      font-size: 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+    }
+    .panel-quant dt { color: var(--text-muted); }
+    .panel-quant dd { margin: 0; color: var(--text-primary); font-weight: 700; text-align: right; }
+    .panel-records {
+      max-height: 360px;
+      overflow-y: auto;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px;
+    }
+    .panel-record {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      font-size: 13px;
+      border-radius: 4px;
+    }
+    .panel-record:hover { background: var(--surface); }
+    .panel-record-title {
+      color: var(--text-primary);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 300px;
+    }
+    .panel-record-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    /* Applicant grouping inside drill-downs */
+    .panel-applicant-group {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 10px;
+    }
+    .panel-applicant-group summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      cursor: pointer;
+      list-style: none;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .panel-applicant-group summary::-webkit-details-marker { display: none; }
+    .panel-applicant-group summary:hover { background: var(--surface); }
+    .panel-applicant-group[open] > summary {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+      border-radius: 6px 6px 0 0;
+    }
+    .panel-applicant-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 280px;
+    }
+    .panel-applicant-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      background: var(--c-blue-pale);
+      color: var(--c-blue);
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+    .panel-applicant-disclosure {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    .panel-applicant-group[open] .panel-applicant-disclosure { transform: rotate(90deg); }
+    .panel-applicant-disclosure { display: inline-block; transition: transform 160ms; }
+    .panel-caveats {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .panel-caveats li {
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      border-bottom: 1px solid var(--grid);
+    }
+    .panel-caveats li:last-child { border-bottom: none; }
+    .panel-caveats li::before { content: "\u2014 "; color: var(--text-muted); }
+
+    /* ===== Footer ===== */
+    .report-footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* ===== Print ===== */
+    @media print {
+      .section-nav, .chart-actions, .why-btn, .qc-share-note,
+      .panel-overlay, .receipts-panel { display: none !important; }
+      .report-section { break-inside: avoid; box-shadow: none; border: 1px solid #e5e7eb; }
+      body { background: #fff; }
+    }
+
+    /* ===== Filter bar ===== */
+    .filter-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 20px 28px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-right: 4px;
+    }
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 160ms;
+      user-select: none;
+    }
+    .filter-pill:hover { border-color: var(--c-blue-light); }
+    .filter-pill.active {
+      background: var(--c-blue);
+      border-color: var(--c-blue);
+      color: #fff;
+    }
+    .filter-pill.active[data-type="Granted patent"] { background: var(--c-teal); border-color: var(--c-teal); }
+    .filter-pill.active[data-type="Patent application"] { background: var(--c-blue); border-color: var(--c-blue); }
+    .filter-pill.active[data-type="Utility model"] { background: var(--c-amber); border-color: var(--c-amber); color: #0f172a; }
+    .filter-pill.active[data-type="Design patent"] { background: var(--c-violet); border-color: var(--c-violet); }
+    .filter-pill .pill-count {
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+    .filter-summary {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .filter-summary strong { color: var(--text-primary); font-weight: 700; }
+    .filter-reset {
+      font-size: 12px;
+      color: var(--c-blue);
+      background: none;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .filter-reset:hover { background: var(--c-blue-pale); }
+
+    /* ===== Spotlight dropdown ===== */
+    .spotlight-select {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="report-header">
+    <div class="header-inner">
+
+      <div class="hero-actions">
+        <div class="download-dropdown" id="download-dropdown">
+          <button class="download-btn" id="download-btn" type="button">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 3v11"/>
+              <path d="M5 9l5 5 5-5"/>
+              <path d="M3 17h14"/>
+            </svg>
+            Download
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px">
+              <polyline points="5 8 10 13 15 8"/>
+            </svg>
+          </button>
+          <div class="download-menu" id="download-menu">
+            <button data-action="download-html">
+              <div class="item-icon" style="background: var(--c-blue-pale); color: var(--c-blue);">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6z"/><path d="M13 2v4h4"/><path d="M7 13l3 3 3-3"/><path d="M10 16V9"/></svg>
+              </div>
+              <div class="item-body">
+                <div class="item-title">Interactive report (HTML)</div>
+                <div class="item-desc">The full report file &mdash; save, email, archive. Opens offline, stays interactive.</div>
+              </div>
+            </button>
+            <button data-action="download-csv">
+              <div class="item-icon" style="background: var(--c-teal-pale); color: var(--c-teal);">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h14M3 10h14M3 15h14"/><path d="M8 3v14M13 3v14"/></svg>
+              </div>
+              <div class="item-body">
+                <div class="item-title">Underlying data (CSV)</div>
+                <div class="item-desc">Spreadsheet of the records behind the charts</div>
+              </div>
+            </button>
+            <button data-action="print-pdf">
+              <div class="item-icon" style="background: var(--c-amber-pale); color: var(--c-amber);">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h8l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v4h4"/></svg>
+              </div>
+              <div class="item-body">
+                <div class="item-title">Printable PDF (static)</div>
+                <div class="item-desc">Opens browser print dialog \u2014 choose "Save as PDF". No interactivity.</div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <button class="help-btn" type="button" tabindex="0" aria-label="About this file">
+          ?
+          <div class="help-tooltip">
+            <b>This is a self-contained interactive HTML report.</b> It works offline, opens in any
+            browser, and keeps every drill-down, receipt, and chart export working. Email it,
+            archive it, or save it to a project folder &mdash; it stays interactive forever. Click
+            <b>Download</b> to save a copy of this file, grab the underlying data as CSV, or print
+            a static PDF.
+          </div>
+        </button>
+      </div>
+
+      <div class="report-title-block">
+        <div class="report-kicker">Patent Landscape Report</div>
+        <h1>{{ query_label }}</h1>
+        <span class="title-accent-bar"></span>
+        <div class="report-subtitle" id="report-subtitle">Loading&hellip;</div>
+      </div>
+
+      <div class="hero-narrative" id="hero-narrative">Loading&hellip;</div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-label">Patent families</div>
+          <div class="hero-stat-value" id="stat-families">&mdash;</div>
+          <button class="why-btn" data-metric="headline_total_families" title="Show receipts">?</button>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Distinct applicants</div>
+          <div class="hero-stat-value" id="stat-applicants">&mdash;</div>
+          <button class="why-btn" data-metric="headline_total_applicants" title="Show receipts">?</button>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Jurisdictions</div>
+          <div class="hero-stat-value" id="stat-jurisdictions">&mdash;</div>
+          <button class="why-btn" data-metric="headline_total_jurisdictions" title="Show receipts">?</button>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Peak filing year</div>
+          <div class="hero-stat-value" id="stat-peak">&mdash;</div>
+          <button class="why-btn" data-metric="headline_peak_year" title="Show receipts">?</button>
+        </div>
+      </div>
+
+      <dl class="query-context" id="query-context">
+        <div class="qc-block" id="qc-search"></div>
+        <div class="qc-block" id="qc-results"></div>
+      </dl>
+    </div>
+  </header>
+
+  <nav class="section-nav">
+    <div class="nav-inner">
+      <a href="#leaders">Leaders</a>
+      <a href="#geography">Geography</a>
+      <a href="#trends">Trends</a>
+      <a href="#technology">Technology</a>
+      <a href="#notable">Notable patents</a>
+      <a href="#methodology">Methodology</a>
+    </div>
+  </nav>
+
+  <main class="report-main">
+
+    <!-- Filter bar -->
+    <div class="filter-bar" id="filter-bar">
+      <span class="filter-label">Filter by type:</span>
+      <div id="filter-pills" style="display:inline-flex;gap:8px;flex-wrap:wrap"></div>
+      <span class="filter-summary" id="filter-summary"></span>
+      <button class="filter-reset" id="filter-reset" style="display:none" type="button">Reset</button>
+    </div>
+
+    <!-- Section 1: Leaders -->
+    <section id="leaders" class="report-section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Section 01 &middot; Applicants</div>
+          <h2>Who&rsquo;s leading the field</h2>
+          <p class="section-subtitle">Top applicants ranked by number of patent families filed. Click any bar to drill down.</p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-actions">
+          <button class="icon-btn" data-metric="top_applicants">Why?</button>
+          <div class="export-dropdown">
+            <button class="icon-btn" data-export-toggle>Export &#9662;</button>
+            <div class="export-menu">
+              <button data-chart="top_applicants" data-format="png">Download PNG</button>
+              <button data-chart="top_applicants" data-format="svg">Download SVG</button>
+            </div>
+          </div>
+        </div>
+        <div id="chart-top-applicants" class="chart chart-tall"></div>
+      </div>
+    </section>
+
+    <!-- Section 3: Geography -->
+    <section id="geography" class="report-section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Section 02 &middot; Geography</div>
+          <h2>Where they&rsquo;re filing</h2>
+          <p class="section-subtitle">Jurisdictions receiving the most patent filings, shown as a world map and precise country ranking.</p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-actions">
+          <button class="icon-btn" data-metric="jurisdiction_distribution">Why?</button>
+          <div class="export-dropdown">
+            <button class="icon-btn" data-export-toggle>Export &#9662;</button>
+            <div class="export-menu">
+              <button data-chart="world_map" data-format="png">Download PNG</button>
+              <button data-chart="world_map" data-format="svg">Download SVG</button>
+            </div>
+          </div>
+        </div>
+        <div id="chart-world-map" class="chart chart-tall"></div>
+        <div class="map-footnote" id="regional-callouts"></div>
+      </div>
+      <div style="margin-top: 32px;">
+        <div class="section-header">
+          <div>
+            <h3>Country ranking</h3>
+            <p class="section-subtitle">Precise counts for the map above, plus regional offices</p>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-actions">
+            <div class="export-dropdown">
+              <button class="icon-btn" data-export-toggle>Export &#9662;</button>
+              <div class="export-menu">
+                <button data-chart="jurisdiction_bars" data-format="png">Download PNG</button>
+                <button data-chart="jurisdiction_bars" data-format="svg">Download SVG</button>
+              </div>
+            </div>
+          </div>
+          <div id="chart-jurisdiction-bars" class="chart"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Trends -->
+    <section id="trends" class="report-section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Section 03 &middot; Trends</div>
+          <h2>When they&rsquo;re filing</h2>
+          <p class="section-subtitle">Filing activity over time, total and broken down by top jurisdictions. Based on application dates.</p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-actions">
+          <button class="icon-btn" data-metric="filing_trends_total">Why?</button>
+          <div class="export-dropdown">
+            <button class="icon-btn" data-export-toggle>Export &#9662;</button>
+            <div class="export-menu">
+              <button data-chart="filing_trends" data-format="png">Download PNG</button>
+              <button data-chart="filing_trends" data-format="svg">Download SVG</button>
+            </div>
+          </div>
+        </div>
+        <div id="chart-filing-trends" class="chart"></div>
+      </div>
+      <div style="margin-top: 32px;">
+        <div class="section-header">
+          <div>
+            <h3>Breakdown by jurisdiction</h3>
+            <p class="section-subtitle">How each top jurisdiction contributes over time</p>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-actions">
+            <button class="icon-btn" data-metric="filings_by_jurisdiction_year">Why?</button>
+            <div class="export-dropdown">
+              <button class="icon-btn" data-export-toggle>Export &#9662;</button>
+              <div class="export-menu">
+                <button data-chart="jurisdiction_trends" data-format="png">Download PNG</button>
+                <button data-chart="jurisdiction_trends" data-format="svg">Download SVG</button>
+              </div>
+            </div>
+          </div>
+          <div id="chart-jurisdiction-trends" class="chart"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Technology -->
+    <section id="technology" class="report-section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Section 04 &middot; Technology</div>
+          <h2>What the technology looks like</h2>
+          <p class="section-subtitle">Top technology areas in the landscape, with CPC codes translated into plain language.</p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-actions">
+          <button class="icon-btn" data-metric="technology_areas">Why?</button>
+          <div class="export-dropdown">
+            <button class="icon-btn" data-export-toggle>Export &#9662;</button>
+            <div class="export-menu">
+              <button data-chart="technology_areas" data-format="png">Download PNG</button>
+              <button data-chart="technology_areas" data-format="svg">Download SVG</button>
+            </div>
+          </div>
+        </div>
+        <div id="chart-technology" class="chart chart-tall"></div>
+      </div>
+    </section>
+
+    <!-- Section 6: Notable patents -->
+    <section id="notable" class="report-section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Section 05 &middot; Spotlight</div>
+          <h2>Notable patents</h2>
+          <p class="section-subtitle" id="notable-criterion">Loading&hellip;</p>
+          <select class="spotlight-select" id="spotlight-select">
+            <option value="recent">Most recent filings</option>
+            <option value="top-applicant-recent">Top applicants' newest patents</option>
+            <option value="foundational">Foundational patents (earliest)</option>
+            <option value="cross-disciplinary">Cross-disciplinary (most CPC classes)</option>
+          </select>
+        </div>
+      </div>
+      <table class="notable-table">
+        <thead>
+          <tr>
+            <th class="col-rank">#</th>
+            <th class="col-title">Title</th>
+            <th class="col-applicant">Applicant</th>
+            <th class="col-year">Year</th>
+            <th class="col-count">Cites</th>
+          </tr>
+        </thead>
+        <tbody id="notable-tbody"></tbody>
+      </table>
+    </section>
+
+    <!-- Section 7: Methodology -->
+    <section id="methodology" class="report-section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Section 06 &middot; Methodology</div>
+          <h2>How the data was gathered</h2>
+          <p class="section-subtitle">Query definition, sources, and honest caveats so any number in the report can be defended.</p>
+        </div>
+      </div>
+
+      <div class="methodology-block">
+        <h3>Query</h3>
+        <p id="method-query">&mdash;</p>
+      </div>
+
+      <div class="methodology-block">
+        <h3>Data source</h3>
+        <p id="method-source">&mdash;</p>
+      </div>
+
+      <div class="methodology-block">
+        <h3>Date range</h3>
+        <p id="method-dates">&mdash;</p>
+      </div>
+
+      <div class="methodology-block">
+        <h3>Document types in this landscape</h3>
+        <p class="section-subtitle" style="margin-bottom: 12px; font-size: 13px;">
+          The BigQuery publications table returns both granted patents and published applications, plus
+          utility models and other document kinds depending on the jurisdiction. Here's the mix in this report:
+        </p>
+        <div id="method-doctypes"></div>
+      </div>
+
+      <div class="methodology-block">
+        <h3>Caveats</h3>
+        <ul id="method-caveats"></ul>
+      </div>
+
+      <div class="methodology-block" id="merges-block">
+        <h3>Applicant name merges</h3>
+        <div class="merge-list" id="merge-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="report-footer">
+    Generated by Patent Landscape Visualization Tool &middot; Opens offline, works forever, safe to email.
+  </footer>
+
+  <!-- Receipts / drill-down slide-over panel -->
+  <div id="panel-overlay" class="panel-overlay"></div>
+  <aside id="receipts-panel" class="receipts-panel">
+    <header class="panel-header">
+      <h3 id="panel-title">Receipts</h3>
+      <button class="panel-close" aria-label="Close" id="panel-close-btn">&times;</button>
+    </header>
+    <div id="panel-body" class="panel-body"></div>
+  </aside>
+
+  <!-- Inlined ECharts -->
+  <script>{{ echarts_js | safe }}</script>
+
+  <!-- Inlined data -->
+  <script id="report-data-json" type="application/json">{{ data_json | safe }}</script>
+  <script id="world-geo-json" type="application/json">{{ world_geojson | safe }}</script>
+
+  <!-- Runtime -->
+  <script>
+    (function() {
+      "use strict";
+
+      // ===== Constants =====
+      const THEME = {
+        accent: "#0062b8",
+        accentDark: "#003a6b",
+        accentMid: "#0062b8",
+        accentLight: "#4ea5e0",
+        accentPale: "#e0ecf9",
+        teal: "#14b8a6",
+        amber: "#f59e0b",
+        rose: "#f43f5e",
+        violet: "#7c3aed",
+        textPrimary: "#0f172a",
+        textSecondary: "#475569",
+        textMuted: "#94a3b8",
+        grid: "#f1f5f9",
+        border: "#e5e7eb",
+        surface: "#ffffff",
+        // Full multi-color palette for categorical charts
+        palette: [
+          "#0062b8", "#14b8a6", "#f59e0b", "#7c3aed",
+          "#f43f5e", "#4ea5e0", "#10b981", "#fb923c",
+          "#a78bfa"
+        ],
+        // Map uses a refined blue ramp — don't want 10 colors on a choropleth
+        mapRamp: ["#e0ecf9", "#b8d4f0", "#8bb8e5", "#4ea5e0", "#2874a6", "#0062b8", "#003a6b"],
+        mapEmpty: "#f1f5f9",
+        mapBorder: "#cbd5e0",
+      };
+
+      const REPORT = JSON.parse(document.getElementById("report-data-json").textContent);
+      const WORLD = JSON.parse(document.getElementById("world-geo-json").textContent);
+
+      // Chart registry: id -> ECharts instance
+      const charts = {};
+
+      // Record lookup: pub_number -> record (built from expanded ALL_RECORDS,
+      // NOT from REPORT.records which has abbreviated single-char keys)
+      const recordById = {};
+      // Populated after ALL_RECORDS is built (see below)
+
+      // ===== Init =====
+      document.addEventListener("DOMContentLoaded", function() {
+        try {
+          echarts.registerMap("world", WORLD);
+        } catch (e) {
+          console.error("Failed to register world map", e);
+        }
+        renderQueryContext();
+        renderHeadline();
+        initTopApplicants();
+        initWorldMap();
+        renderRegionalCallouts();
+        initJurisdictionBars();
+        initFilingTrends();
+        initJurisdictionTrends();
+        initTechnologyAreas();
+        renderNotable();
+        renderDocTypes();
+        renderMethodology();
+        wireUpPanelEvents();
+        wireUpExportMenus();
+        wireUpDownloadMenu();
+        wireUpFilterAndSpotlight();
+        window.addEventListener("resize", resizeAllCharts);
+      });
+
+      // ===== Helpers =====
+      function metric(id) { return REPORT.metrics[id]; }
+
+      function formatInt(n) {
+        if (n == null) return "\u2014";
+        return Number(n).toLocaleString();
+      }
+
+      function baseAxisStyle() {
+        return {
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { color: THEME.textSecondary, fontSize: 13, fontWeight: 500 },
+          splitLine: { lineStyle: { color: THEME.grid, type: "dashed" } },
+        };
+      }
+
+      function commonChartOptions(title) {
+        return {
+          title: title ? {
+            text: title,
+            textStyle: { color: THEME.textPrimary, fontSize: 14, fontWeight: 600 },
+            left: 0, top: 0,
+          } : undefined,
+          tooltip: {
+            trigger: "item",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 12 },
+            padding: [8, 12],
+            extraCssText: "box-shadow: 0 4px 12px rgba(15,23,42,0.08);",
+          },
+          grid: { top: 30, left: 8, right: 40, bottom: 30, containLabel: true },
+          color: THEME.palette,
+        };
+      }
+
+      function resizeAllCharts() {
+        Object.values(charts).forEach(c => c && c.resize());
+      }
+
+      // ===== Query context (header info block) =====
+      function renderQueryContext() {
+        const q = REPORT.query_spec || {};
+        const total_families = metric("headline_total_families");
+        const total_applicants = metric("headline_total_applicants");
+        const total_jurisdictions = metric("headline_total_jurisdictions");
+
+        // Subtitle: a one-line description of the search
+        let subtitle = "";
+        if (q.mode === "bigquery") {
+          const cpcs = (q.cpc_prefixes || []).join(", ");
+          const dr = REPORT.date_range || [];
+          const span = (dr.length === 2 && dr[0] && dr[1])
+            ? (dr[0] === dr[1] ? dr[0] : dr[0] + "\u2013" + dr[1])
+            : "";
+          subtitle = (cpcs ? "CPC " + cpcs : "") + (span ? " \u00b7 " + span : "");
+        } else if (q.mode === "csv") {
+          subtitle = "CSV import \u00b7 " + (q.source_file_name || "unknown");
+        }
+        document.getElementById("report-subtitle").textContent = subtitle || "";
+
+        // Left block: what was searched
+        const searchBlock = document.getElementById("qc-search");
+        const searchRows = [["Data source", escapeHtml(REPORT.data_source || "unknown")]];
+        if (q.mode === "bigquery") {
+          const cpcs = (q.cpc_prefixes || []);
+          if (cpcs.length) {
+            const lines = cpcs.map(function(code) {
+              return "<code>" + escapeHtml(code) + "</code>";
+            }).join(" ");
+            searchRows.push(["CPC codes", lines]);
+          }
+          if (q.date_from && q.date_to) {
+            searchRows.push(["Requested window", escapeHtml(q.date_from) + " to " + escapeHtml(q.date_to)]);
+          }
+          const countries = q.countries || [];
+          if (countries.length) {
+            searchRows.push(["Jurisdictions searched", countries.map(escapeHtml).join(", ")]);
+          } else {
+            searchRows.push(["Jurisdictions searched", "Worldwide"]);
+          }
+        } else if (q.mode === "csv") {
+          searchRows.push(["Source file", "<code>" + escapeHtml(q.source_file_name || "") + "</code>"]);
+        }
+        searchBlock.innerHTML =
+          "<div class='qc-block-title'>Search parameters</div>" +
+          searchRows.map(function(r) {
+            return "<div class='qc-row'><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
+          }).join("");
+
+        // Right block: results summary
+        const resultsBlock = document.getElementById("qc-results");
+        const dr = REPORT.date_range || [];
+        const actualSpan = (dr.length === 2 && dr[0] && dr[1])
+          ? (dr[0] === dr[1] ? String(dr[0]) : dr[0] + "\u2013" + dr[1])
+          : "\u2014";
+        const resultsRows = [
+          ["Patent families", total_families ? formatInt(total_families.value) : "\u2014"],
+          ["Distinct applicants", total_applicants ? formatInt(total_applicants.value) : "\u2014"],
+          ["Jurisdictions with filings", total_jurisdictions ? formatInt(total_jurisdictions.value) : "\u2014"],
+          ["Effective date span", escapeHtml(actualSpan)],
+          ["Records pulled", formatInt(REPORT.record_count || 0)],
+          ["Generated", escapeHtml(REPORT.generated_at ? REPORT.generated_at.slice(0, 19).replace("T", " ") + " UTC" : "")],
+        ];
+        resultsBlock.innerHTML =
+          "<div class='qc-block-title'>Results</div>" +
+          resultsRows.map(function(r) {
+            return "<div class='qc-row'><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
+          }).join("");
+      }
+
+      // ===== Headline =====
+      function renderHeadline() {
+        const summary = metric("headline_summary");
+        if (summary && summary.value) {
+          // Pull narrative into the hero block. If the summary has multiple
+          // lines (bullets), keep them — the CSS uses white-space: pre-line.
+          document.getElementById("hero-narrative").textContent = summary.value;
+        }
+        setStat("stat-families", metric("headline_total_families"));
+        setStat("stat-applicants", metric("headline_total_applicants"));
+        setStat("stat-jurisdictions", metric("headline_total_jurisdictions"));
+        setStat("stat-peak", metric("headline_peak_year"));
+      }
+      function setStat(elId, m) {
+        if (!m) return;
+        const v = m.value;
+        document.getElementById(elId).textContent = formatInt(v);
+      }
+
+      // ===== Top Applicants bar chart =====
+      function initTopApplicants() {
+        const m = metric("top_applicants");
+        if (!m || !m.value || !m.value.length) return;
+        const rows = m.value.slice().reverse(); // bottom-to-top for ECharts horizontal bars
+        const chart = echarts.init(document.getElementById("chart-top-applicants"));
+        chart.setOption(Object.assign({}, commonChartOptions("Top applicants by patent families"), {
+          tooltip: {
+            trigger: "item",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 12 },
+            padding: [8, 12],
+            formatter: function(params) {
+              const idx = params.dataIndex;
+              const row = rows[idx];
+              return "<b>" + escapeHtml(row.name) + "</b><br>" +
+                     row.family_count + " families (" + row.share_label + ")";
+            }
+          },
+          grid: { top: 30, left: 8, right: 80, bottom: 30, containLabel: true },
+          xAxis: Object.assign({ type: "value", minInterval: 1 }, baseAxisStyle()),
+          yAxis: Object.assign({
+            type: "category",
+            data: rows.map(r => r.name),
+            axisLabel: { color: THEME.textPrimary, fontSize: 13, fontWeight: 500, width: 260, overflow: "truncate" },
+          }, { axisLine: { show: false }, axisTick: { show: false } }),
+          series: [{
+            type: "bar",
+            data: rows.map(function(r, i) {
+              // Gradient: deeper color for higher-ranked bars
+              const intensity = 0.6 + (i / Math.max(rows.length - 1, 1)) * 0.4;
+              return {
+                value: r.family_count,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    { offset: 0, color: "#0062b8" },
+                    { offset: 1, color: "#4ea5e0" },
+                  ]),
+                  borderRadius: [0, 6, 6, 0],
+                  opacity: intensity,
+                },
+              };
+            }),
+            barWidth: 20,
+            label: {
+              show: true,
+              position: "right",
+              color: "#0062b8",
+              fontSize: 12,
+              fontWeight: 700,
+            },
+          }],
+        }));
+        chart.on("click", function(params) {
+          const row = rows[params.dataIndex];
+          if (row) openDrillDown({
+            title: row.name,
+            subtitle: row.family_count + " patent families (" + row.share_label + ")",
+            recordIds: row.record_ids,
+          });
+        });
+        charts.top_applicants = chart;
+      }
+
+      // ===== World map =====
+      // EPC (European Patent Convention) member states. If the landscape has
+      // EPO filings in the regional callouts, we overlay these country names
+      // with a distinctive tint so the reader sees "Europe is covered by EPO
+      // even though individual EPC countries have no direct filings here".
+      // Names match the bundled Natural Earth 1:110m GeoJSON.
+      const EPC_MEMBER_STATES = [
+        "Germany", "France", "United Kingdom", "Italy", "Spain", "Netherlands",
+        "Belgium", "Switzerland", "Sweden", "Austria", "Denmark", "Finland",
+        "Norway", "Poland", "Czech Republic", "Portugal", "Ireland", "Greece",
+        "Hungary", "Romania", "Bulgaria", "Croatia", "Slovakia", "Slovenia",
+        "Lithuania", "Latvia", "Estonia", "Luxembourg", "Iceland", "Turkey",
+        "Republic of Serbia", "Macedonia", "Albania"
+      ];
+
+      function initWorldMap() {
+        const el = document.getElementById("chart-world-map");
+        if (!el) return;
+        const mapData = REPORT.map_data || [];
+        const maxValue = mapData.reduce((m, d) => Math.max(m, d.value), 0);
+
+        // If the landscape has EPO in the regional callouts, build an EPC
+        // overlay — all EPC member states get a pale teal fill even if they
+        // have no direct country-level filings in the data. This tells the
+        // reader "EP filings cover these countries via the EPO route".
+        //
+        // Implementation: we merge the EPC countries into the mapData array
+        // as data items with explicit per-item itemStyle. ECharts' data-item
+        // itemStyle has higher precedence than both series-level itemStyle
+        // and visualMap coloring, which makes this the most reliable place
+        // to apply the overlay.
+        const callouts = REPORT.regional_callouts || [];
+        const hasEPO = callouts.some(function(c) { return c.code === "EP"; });
+        const directFilingNames = new Set(mapData.map(function(d) { return d.name; }));
+        const epcData = (hasEPO ? EPC_MEMBER_STATES : [])
+          .filter(function(name) { return !directFilingNames.has(name); })
+          .map(function(name) {
+            return {
+              name: name,
+              // Sentinel value that is outside the visualMap range so it
+              // doesn't pick up the filings color ramp. ECharts still accepts
+              // the entry and applies itemStyle from the data item.
+              value: NaN,
+              isEPC: true,
+              itemStyle: {
+                areaColor: "#5eead4",  // brighter teal — unmistakable on the map
+                borderColor: "#0d9488",
+                borderWidth: 0.9,
+              },
+              emphasis: {
+                itemStyle: { areaColor: "#14b8a6", borderColor: "#0f172a", borderWidth: 1.2 },
+              },
+            };
+          });
+        const combinedMapData = mapData.concat(epcData);
+
+        const chart = echarts.init(el);
+        chart.setOption({
+          tooltip: {
+            trigger: "item",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 13 },
+            padding: [10, 14],
+            formatter: function(params) {
+              const d = params.data;
+              // EPC member state — rendered via combined map data with isEPC flag
+              if (d && d.isEPC) {
+                const epoCallout = callouts.find(function(c) { return c.code === "EP"; });
+                const epoCount = epoCallout ? formatInt(epoCallout.count) : "";
+                return "<b>" + escapeHtml(params.name) + "</b><br>" +
+                       "<span style='color:#0d9488;font-weight:600'>EPC member state</span><br>" +
+                       "<span style='color:#94a3b8;font-size:12px'>Covered by " + epoCount + " EPO filings \u2014 see map footnote</span>";
+              }
+              // Actual country filings — must be a real numeric value
+              if (d && typeof d.value === "number" && !isNaN(d.value)) {
+                return "<b>" + escapeHtml(d.displayName || params.name) + "</b><br>" +
+                       formatInt(d.value) + " filings (" + (d.share_label || "") + ")";
+              }
+              // Fallback for no-data countries
+              return "<b>" + escapeHtml(params.name) + "</b><br><span style='color:#a0aec0'>No filings in this landscape</span>";
+            },
+          },
+          visualMap: {
+            left: 12, bottom: 12,
+            min: 0, max: maxValue || 1,
+            text: ["More", "Fewer"],
+            textStyle: { color: THEME.textMuted, fontSize: 11, fontWeight: 600 },
+            itemWidth: 14,
+            itemHeight: 110,
+            inRange: {
+              color: ["#ccfbf1", "#99f6e4", "#5eead4", "#2dd4bf", "#14b8a6", "#0d9488", "#115e59"],
+            },
+            calculable: false,
+          },
+          series: [{
+            type: "map",
+            map: "world",
+            roam: false,
+            data: combinedMapData,
+            itemStyle: {
+              areaColor: THEME.mapEmpty,
+              borderColor: THEME.mapBorder,
+              borderWidth: 0.5,
+            },
+            emphasis: {
+              itemStyle: { areaColor: "#fbbf24", borderColor: "#0f172a", borderWidth: 1 },
+              label: { show: false },
+            },
+            select: { disabled: true },
+            label: { show: false },
+          }],
+        });
+        chart.on("click", function(params) {
+          const d = params.data;
+          // Direct country filings — drill into the list for that country
+          if (d && typeof d.value === "number" && !isNaN(d.value) && d.record_ids && d.record_ids.length) {
+            openDrillDown({
+              title: d.displayName || params.name,
+              subtitle: d.value + " filings",
+              recordIds: d.record_ids,
+            });
+            return;
+          }
+          // EPC member state — route to the EPO drill-down so the user sees the
+          // EPO patents that notionally cover this country.
+          if (d && d.isEPC) {
+            const epoCallout = callouts.find(function(c) { return c.code === "EP"; });
+            if (epoCallout) {
+              openDrillDown({
+                title: "European Patent Office (EPO)",
+                subtitle: params.name + " is an EPC member state \u00b7 " +
+                  formatInt(epoCallout.count) + " EPO filings cover this jurisdiction (" + epoCallout.share_label + ")",
+                recordIds: epoCallout.record_ids || [],
+              });
+            }
+            return;
+          }
+        });
+        charts.world_map = chart;
+      }
+
+      // ===== Regional office footnote =====
+      // Regional offices (EPO, WIPO) aren't on the map because they cover
+      // many countries, not one. Rather than a permanent sidebar, they live
+      // as a compact footnote immediately below the map.
+      function renderRegionalCallouts() {
+        const container = document.getElementById("regional-callouts");
+        const callouts = REPORT.regional_callouts || [];
+        if (!callouts.length) {
+          container.style.display = "none";
+          return;
+        }
+        const items = callouts.map(function(c) {
+          return "<span class='map-footnote-item' data-code='" + escapeHtml(c.code) + "' title='" + escapeHtml(c.note || '') + "'>" +
+            "<span class='count'>" + formatInt(c.count) + "</span>" +
+            "<span>filings at <strong>" + escapeHtml(c.name) + "</strong></span>" +
+          "</span>";
+        }).join("");
+        container.innerHTML =
+          "<span class='map-footnote-label'>Additional filings not plotted</span>" +
+          items +
+          "<span class='map-footnote-help'>Regional offices cover multiple countries \u2014 click for details</span>";
+        container.querySelectorAll(".map-footnote-item").forEach(function(el) {
+          el.addEventListener("click", function() {
+            const code = el.dataset.code;
+            const c = callouts.find(function(x) { return x.code === code; });
+            if (c) openDrillDown({
+              title: c.name,
+              subtitle: c.count + " filings (" + c.share_label + ")",
+              recordIds: c.record_ids,
+            });
+          });
+        });
+      }
+
+      // ===== Jurisdiction bars =====
+      function initJurisdictionBars() {
+        const m = metric("jurisdiction_distribution");
+        if (!m || !m.value || !m.value.length) return;
+        const rows = m.value.slice().reverse();
+        const chart = echarts.init(document.getElementById("chart-jurisdiction-bars"));
+        chart.setOption(Object.assign({}, commonChartOptions(null), {
+          tooltip: {
+            trigger: "item",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 12 },
+            padding: [8, 12],
+            formatter: function(params) {
+              const row = rows[params.dataIndex];
+              const regional = row.is_regional ? " <span style='color:#a0aec0'>(regional)</span>" : "";
+              return "<b>" + escapeHtml(row.name) + "</b>" + regional + "<br>" +
+                row.count + " filings (" + row.share_label + ")";
+            },
+          },
+          grid: { top: 10, left: 8, right: 80, bottom: 30, containLabel: true },
+          xAxis: Object.assign({ type: "value", minInterval: 1 }, baseAxisStyle()),
+          yAxis: Object.assign({
+            type: "category",
+            data: rows.map(r => r.name + (r.is_regional ? " (regional)" : "")),
+            axisLabel: { color: THEME.textPrimary, fontSize: 13, fontWeight: 500, width: 240, overflow: "truncate" },
+          }, { axisLine: { show: false }, axisTick: { show: false } }),
+          series: [{
+            type: "bar",
+            data: rows.map(function(r, i) {
+              // Teal gradient for geography section
+              const intensity = 0.6 + (i / Math.max(rows.length - 1, 1)) * 0.4;
+              return {
+                value: r.count,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    { offset: 0, color: "#0d9488" },
+                    { offset: 1, color: "#14b8a6" },
+                  ]),
+                  opacity: intensity,
+                },
+              };
+            }),
+            itemStyle: { borderRadius: [0, 6, 6, 0] },
+            barWidth: 18,
+            label: { show: true, position: "right", color: "#0d9488", fontSize: 12, fontWeight: 700 },
+          }],
+        }));
+        chart.on("click", function(params) {
+          const row = rows[params.dataIndex];
+          if (row) openDrillDown({
+            title: row.name,
+            subtitle: row.count + " filings (" + row.share_label + ")",
+            recordIds: row.record_ids,
+          });
+        });
+        charts.jurisdiction_bars = chart;
+      }
+
+      // ===== Filing trends =====
+      function initFilingTrends() {
+        const m = metric("filing_trends_total");
+        if (!m || !m.value) return;
+        const data = m.value;
+        const chart = echarts.init(document.getElementById("chart-filing-trends"));
+        chart.setOption(Object.assign({}, commonChartOptions(null), {
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 12 },
+            padding: [8, 12],
+          },
+          grid: { top: 20, left: 8, right: 20, bottom: 30, containLabel: true },
+          xAxis: Object.assign({ type: "category", data: data.years, boundaryGap: false }, baseAxisStyle()),
+          yAxis: Object.assign({ type: "value", minInterval: 1 }, baseAxisStyle()),
+          series: [{
+            name: "Filings",
+            type: "line",
+            smooth: true,
+            data: data.counts,
+            lineStyle: { color: THEME.amber, width: 3 },
+            itemStyle: { color: THEME.amber },
+            symbol: "circle",
+            symbolSize: 8,
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: "rgba(245,158,11,0.28)" },
+                { offset: 1, color: "rgba(245,158,11,0.02)" },
+              ]),
+            },
+          }],
+        }));
+        charts.filing_trends = chart;
+      }
+
+      // ===== Jurisdiction trends (stacked) =====
+      function initJurisdictionTrends() {
+        const m = metric("filings_by_jurisdiction_year");
+        if (!m || !m.value) return;
+        const data = m.value;
+        const chart = echarts.init(document.getElementById("chart-jurisdiction-trends"));
+        chart.setOption(Object.assign({}, commonChartOptions(null), {
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 12 },
+            padding: [8, 12],
+          },
+          legend: {
+            data: data.series.map(s => s.name),
+            top: 0,
+            right: 0,
+            textStyle: { color: THEME.textSecondary, fontSize: 13, fontWeight: 500 },
+            icon: "circle",
+            itemWidth: 10,
+            itemHeight: 10,
+            itemGap: 16,
+            // Prevent users from accidentally toggling series off with a click.
+            // Without this, clicking a legend item hides that series and it
+            // can look "stuck" in a filtered state.
+            selectedMode: false,
+          },
+          grid: { top: 40, left: 8, right: 20, bottom: 30, containLabel: true },
+          xAxis: Object.assign({ type: "category", data: data.years, boundaryGap: false }, baseAxisStyle()),
+          yAxis: Object.assign({ type: "value", minInterval: 1 }, baseAxisStyle()),
+          series: data.series.map(function(s, i) {
+            return {
+              name: s.name,
+              type: "line",
+              stack: "total",
+              smooth: true,
+              symbol: "none",
+              data: s.values,
+              areaStyle: { opacity: 0.75 },
+              lineStyle: { width: 1 },
+              itemStyle: { color: THEME.palette[i % THEME.palette.length] },
+            };
+          }),
+        }));
+        charts.jurisdiction_trends = chart;
+      }
+
+      // ===== Technology areas =====
+      function initTechnologyAreas() {
+        const m = metric("technology_areas");
+        if (!m || !m.value || !m.value.length) return;
+        const rows = m.value.slice().reverse();
+        const chart = echarts.init(document.getElementById("chart-technology"));
+        chart.setOption(Object.assign({}, commonChartOptions(null), {
+          tooltip: {
+            trigger: "item",
+            backgroundColor: "#ffffff",
+            borderColor: THEME.border,
+            borderWidth: 1,
+            textStyle: { color: THEME.textPrimary, fontSize: 12 },
+            padding: [8, 12],
+            formatter: function(params) {
+              const row = rows[params.dataIndex];
+              return "<b>" + escapeHtml(row.name) + "</b><br>" +
+                "<span style='color:#a0aec0;font-size:11px'>" + escapeHtml(row.code) + "</span><br>" +
+                row.family_count + " families (" + row.share_label + ")";
+            },
+          },
+          grid: { top: 10, left: 8, right: 80, bottom: 30, containLabel: true },
+          xAxis: Object.assign({ type: "value", minInterval: 1 }, baseAxisStyle()),
+          yAxis: Object.assign({
+            type: "category",
+            data: rows.map(r => r.name),
+            axisLabel: { color: THEME.textPrimary, fontSize: 13, fontWeight: 500, width: 280, overflow: "truncate" },
+          }, { axisLine: { show: false }, axisTick: { show: false } }),
+          series: [{
+            type: "bar",
+            data: rows.map(function(r, i) {
+              // Violet gradient for technology section
+              const intensity = 0.6 + (i / Math.max(rows.length - 1, 1)) * 0.4;
+              return {
+                value: r.family_count,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    { offset: 0, color: "#7c3aed" },
+                    { offset: 1, color: "#a78bfa" },
+                  ]),
+                  opacity: intensity,
+                },
+              };
+            }),
+            itemStyle: { borderRadius: [0, 6, 6, 0] },
+            barWidth: 18,
+            label: { show: true, position: "right", color: "#7c3aed", fontSize: 12, fontWeight: 700 },
+          }],
+        }));
+        chart.on("click", function(params) {
+          const row = rows[params.dataIndex];
+          if (row) openDrillDown({
+            title: row.name + " (" + row.code + ")",
+            subtitle: row.family_count + " patent families (" + row.share_label + ")",
+            recordIds: row.record_ids,
+          });
+        });
+        charts.technology_areas = chart;
+      }
+
+      // ===== Notable patents table =====
+      function renderNotable() {
+        const m = metric("notable_patents");
+        if (!m || !m.value) return;
+        const data = m.value;
+        document.getElementById("notable-criterion").textContent = "Criterion: " + data.criterion;
+        const tbody = document.getElementById("notable-tbody");
+        tbody.innerHTML = data.rows.map(function(row) {
+          const link = row.url
+            ? "<a href='" + escapeHtml(row.url) + "' target='_blank' rel='noopener'>" +
+              escapeHtml(row.publication_number) + "</a>"
+            : escapeHtml(row.publication_number);
+          return "<tr>" +
+            "<td class='col-rank'>" + row.rank + "</td>" +
+            "<td class='col-title'>" +
+              "<div style='font-weight:500'>" + escapeHtml(row.title || row.publication_number) + "</div>" +
+              "<div style='font-size:11px;color:#a0aec0;margin-top:2px'>" + link + " &middot; " + escapeHtml(row.jurisdiction || "") + "</div>" +
+            "</td>" +
+            "<td class='col-applicant'>" + escapeHtml(row.applicant || "") + "</td>" +
+            "<td class='col-year'>" + (row.year || "\u2014") + "</td>" +
+            "<td class='col-count'>" + (row.cited_by_count || 0) + "</td>" +
+          "</tr>";
+        }).join("");
+      }
+
+      // ===== Document type breakdown (methodology) =====
+      function renderDocTypes() {
+        const m = metric("document_type_breakdown");
+        const container = document.getElementById("method-doctypes");
+        if (!m || !m.value || !m.value.length) {
+          container.innerHTML = "<p class='section-subtitle' style='font-size:13px'>(no kind-code data available)</p>";
+          return;
+        }
+        container.innerHTML = "<div class='doctype-grid'>" +
+          m.value.map(function(r) {
+            return "<div class='doctype-pill' data-kind='" + escapeHtml(r.label) + "'>" +
+              "<div class='doctype-label'>" + escapeHtml(r.label) + "</div>" +
+              "<div class='doctype-count'>" + formatInt(r.count) + "</div>" +
+              "<div class='doctype-share'>" + r.share_pct.toFixed(1) + "%</div>" +
+            "</div>";
+          }).join("") +
+          "</div>";
+      }
+
+      // ===== Methodology =====
+      function renderMethodology() {
+        const q = REPORT.query_spec || {};
+        const queryParts = [];
+        if (q.cpc_prefixes && q.cpc_prefixes.length) {
+          queryParts.push("CPC prefixes: " + q.cpc_prefixes.map(function(p) {
+            return "<code>" + escapeHtml(p) + "</code>";
+          }).join(", "));
+        }
+        if (q.countries && q.countries.length) {
+          queryParts.push("Countries: " + q.countries.join(", "));
+        }
+        if (q.keywords && q.keywords.length) {
+          queryParts.push("Keywords: " + q.keywords.join(", "));
+        }
+        if (q.source_file_name) {
+          queryParts.push("Source file: <code>" + escapeHtml(q.source_file_name) + "</code>");
+        }
+        document.getElementById("method-query").innerHTML =
+          queryParts.length ? queryParts.join("<br>") : "No query spec recorded.";
+
+        document.getElementById("method-source").textContent = REPORT.data_source || "unknown";
+        document.getElementById("method-dates").textContent =
+          (REPORT.date_range && REPORT.date_range.length === 2)
+            ? REPORT.date_range[0] + "\u2013" + REPORT.date_range[1]
+            : "unknown";
+
+        const caveats = (REPORT.query_spec && REPORT.query_spec.caveats) || REPORT.caveats || [];
+        const caveatList = document.getElementById("method-caveats");
+        if (caveats.length) {
+          caveatList.innerHTML = caveats.map(function(c) {
+            return "<li>" + escapeHtml(c) + "</li>";
+          }).join("");
+        } else {
+          caveatList.innerHTML = "<li>No additional caveats recorded.</li>";
+        }
+
+        // Merge audit
+        const mergeBlock = document.getElementById("merges-block");
+        const mergeList = document.getElementById("merge-list");
+        const merges = REPORT.applicant_merges || {};
+        const merged = Object.keys(merges).filter(function(k) { return merges[k].length > 1; });
+        if (!merged.length) {
+          mergeBlock.classList.add("hidden");
+          return;
+        }
+        mergeList.innerHTML = merged.sort().map(function(canonical) {
+          const variants = merges[canonical];
+          return "<div class='merge-item'>" +
+            "<div class='merge-canonical'>" + escapeHtml(canonical) + "</div>" +
+            "<div class='merge-variants'>" + variants.map(escapeHtml).join(" &middot; ") + "</div>" +
+          "</div>";
+        }).join("");
+      }
+
+      // ===== Receipts / drill-down panel =====
+      function openReceipts(metricId) {
+        const m = metric(metricId);
+        if (!m) return;
+        document.getElementById("panel-title").textContent = m.label || "Receipts";
+        let html = "";
+
+        html += "<div class='panel-label'>Value</div>";
+        html += "<div class='panel-text'>" + escapeHtml(typeof m.value === "object" ? JSON.stringify(m.value).slice(0, 100) + "..." : String(m.value)) + "</div>";
+
+        if (m.quantification && Object.keys(m.quantification).length) {
+          html += "<div class='panel-label'>Breakdown</div>";
+          html += "<dl class='panel-quant'>";
+          for (const [k, v] of Object.entries(m.quantification)) {
+            html += "<dt>" + escapeHtml(k.replace(/_/g, " ")) + "</dt>";
+            html += "<dd>" + escapeHtml(typeof v === "number" ? v.toLocaleString() : String(v)) + "</dd>";
+          }
+          html += "</dl>";
+        }
+
+        if (m.formula_plain) {
+          html += "<div class='panel-label'>How this was computed</div>";
+          html += "<div class='panel-text'>" + escapeHtml(m.formula_plain) + "</div>";
+        }
+        if (m.formula_technical) {
+          html += "<div class='panel-label'>Technical formula</div>";
+          html += "<div class='panel-formula'>" + escapeHtml(m.formula_technical) + "</div>";
+        }
+
+        if (m.source_record_ids && m.source_record_ids.length) {
+          html += "<div class='panel-label'>Source records (" + m.source_record_ids.length + ")</div>";
+          html += "<div class='panel-records'>";
+          html += m.source_record_ids.slice(0, 100).map(function(rid) {
+            const rec = recordById[rid];
+            if (rec && rec.url) {
+              return "<div class='panel-record'>" +
+                "<a href='" + escapeHtml(rec.url) + "' target='_blank' rel='noopener' class='panel-record-title'>" +
+                escapeHtml(rec.publication_number || rid) + "</a>" +
+                "<span class='panel-record-meta'>" + escapeHtml(rec.jurisdiction || "") + " &middot; " + (rec.application_year || "\u2014") + "</span>" +
+              "</div>";
+            } else if (rec) {
+              return "<div class='panel-record'>" +
+                "<span class='panel-record-title'>" + escapeHtml(rec.publication_number || rid) + "</span>" +
+                "<span class='panel-record-meta'>" + escapeHtml(rec.jurisdiction || "") + " &middot; " + (rec.application_year || "\u2014") + "</span>" +
+              "</div>";
+            }
+            return "<div class='panel-record'><span class='panel-record-title'>" + escapeHtml(rid) + "</span></div>";
+          }).join("");
+          if (m.source_record_ids.length > 100) {
+            html += "<div class='panel-record-meta' style='padding:8px 10px'>(showing first 100 of " + m.source_record_ids.length + ")</div>";
+          }
+          html += "</div>";
+        }
+
+        if (m.caveats && m.caveats.length) {
+          html += "<div class='panel-label'>Caveats</div>";
+          html += "<ul class='panel-caveats'>" + m.caveats.map(function(c) {
+            return "<li>" + escapeHtml(c) + "</li>";
+          }).join("") + "</ul>";
+        }
+
+        if (m.sensitivity_notes && m.sensitivity_notes.length) {
+          html += "<div class='panel-label'>What would change this</div>";
+          html += "<ul class='panel-caveats'>" + m.sensitivity_notes.map(function(c) {
+            return "<li>" + escapeHtml(c) + "</li>";
+          }).join("") + "</ul>";
+        }
+
+        document.getElementById("panel-body").innerHTML = html;
+        showPanel();
+      }
+
+      function openDrillDown(opts) {
+        document.getElementById("panel-title").textContent = opts.title || "Details";
+        let html = "";
+        if (opts.subtitle) {
+          html += "<div class='panel-text' style='margin-bottom:18px'>" + escapeHtml(opts.subtitle) + "</div>";
+        }
+        if (opts.recordIds && opts.recordIds.length) {
+          // Group records by first normalized applicant
+          const groups = {};
+          const orphans = [];
+          let resolvable = 0;
+          for (const rid of opts.recordIds) {
+            const rec = recordById[rid];
+            if (!rec) { orphans.push(rid); continue; }
+            resolvable++;
+            const applicant = (rec.applicants && rec.applicants[0]) || "Unknown applicant";
+            (groups[applicant] = groups[applicant] || []).push(rec);
+          }
+          const ranked = Object.keys(groups).sort(function(a, b) {
+            return groups[b].length - groups[a].length || a.localeCompare(b);
+          });
+
+          html += "<div class='panel-label'>By applicant (" + ranked.length + " applicants, " +
+                  (resolvable + orphans.length) + " patents)</div>";
+
+          // All applicant groups collapsed by default. The user clicks to expand.
+          const MAX_EXPANDED = 0;
+          html += ranked.map(function(name, i) {
+            const rows = groups[name];
+            const isOpen = i < MAX_EXPANDED ? " open" : "";
+            const patentHtml = rows.slice(0, 50).map(function(rec) {
+              const link = rec.url
+                ? "<a href='" + escapeHtml(rec.url) + "' target='_blank' rel='noopener' class='panel-record-title' title='" + escapeHtml(rec.title || "") + "'>" +
+                  escapeHtml(rec.publication_number || "") + "</a>"
+                : "<span class='panel-record-title'>" + escapeHtml(rec.publication_number || "") + "</span>";
+              return "<div class='panel-record'>" + link +
+                "<span class='panel-record-meta'>" + escapeHtml(rec.jurisdiction || "") + " \u00b7 " + (rec.application_year || "\u2014") + "</span>" +
+              "</div>";
+            }).join("");
+            const more = rows.length > 50
+              ? "<div class='panel-record-meta' style='padding:6px 10px'>(showing first 50 of " + rows.length + ")</div>"
+              : "";
+            return "<details class='panel-applicant-group'" + isOpen + ">" +
+              "<summary>" +
+                "<span class='panel-applicant-name'>" + escapeHtml(name) + "</span>" +
+                "<span style='display:flex;align-items:center;gap:4px'>" +
+                  "<span class='panel-applicant-count'>" + rows.length + "</span>" +
+                  "<span class='panel-applicant-disclosure'>\u25B6</span>" +
+                "</span>" +
+              "</summary>" +
+              "<div style='padding:4px'>" + patentHtml + more + "</div>" +
+            "</details>";
+          }).join("");
+
+          if (orphans.length) {
+            html += "<div class='panel-label'>Unresolved record IDs (" + orphans.length + ")</div>";
+            html += "<div class='panel-text' style='font-size:12px'>" +
+              "These records were referenced by metric aggregates but not embedded in this file. " +
+              "Use the CSV download for the complete dataset." +
+              "</div>";
+          }
+        }
+        document.getElementById("panel-body").innerHTML = html;
+        // Always scroll the panel body to the top when opening new content
+        document.getElementById("panel-body").scrollTop = 0;
+        showPanel();
+      }
+
+      function showPanel() {
+        document.getElementById("panel-overlay").classList.add("visible");
+        document.getElementById("receipts-panel").classList.add("visible");
+      }
+      function closePanel() {
+        document.getElementById("panel-overlay").classList.remove("visible");
+        document.getElementById("receipts-panel").classList.remove("visible");
+      }
+
+      function wireUpPanelEvents() {
+        document.getElementById("panel-overlay").addEventListener("click", closePanel);
+        document.getElementById("panel-close-btn").addEventListener("click", closePanel);
+        document.addEventListener("keydown", function(e) {
+          if (e.key === "Escape") closePanel();
+        });
+        document.querySelectorAll("[data-metric]").forEach(function(el) {
+          el.addEventListener("click", function() {
+            openReceipts(el.dataset.metric);
+          });
+        });
+      }
+
+      // ===== Export menus =====
+      function wireUpExportMenus() {
+        document.querySelectorAll("[data-export-toggle]").forEach(function(btn) {
+          btn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            const parent = btn.closest(".export-dropdown");
+            document.querySelectorAll(".export-dropdown.open").forEach(function(d) {
+              if (d !== parent) d.classList.remove("open");
+            });
+            parent.classList.toggle("open");
+          });
+        });
+        document.addEventListener("click", function() {
+          document.querySelectorAll(".export-dropdown.open").forEach(function(d) {
+            d.classList.remove("open");
+          });
+        });
+        document.querySelectorAll("[data-chart][data-format]").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            const chartId = btn.dataset.chart;
+            const format = btn.dataset.format;
+            const chart = charts[chartId];
+            if (!chart) return;
+            const url = chart.getDataURL({
+              type: format,
+              backgroundColor: "#ffffff",
+              pixelRatio: 3,
+              excludeComponents: ["toolbox"],
+            });
+            const link = document.createElement("a");
+            link.download = chartId + "." + format;
+            link.href = url;
+            link.click();
+          });
+        });
+      }
+
+      // ===== Download menu (CSV + Print) =====
+      function wireUpDownloadMenu() {
+        const dropdown = document.getElementById("download-dropdown");
+        const btn = document.getElementById("download-btn");
+        const menu = document.getElementById("download-menu");
+        if (!btn || !menu) return;
+        btn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          dropdown.classList.toggle("open");
+        });
+        document.addEventListener("click", function(e) {
+          if (!dropdown.contains(e.target)) dropdown.classList.remove("open");
+        });
+        menu.querySelectorAll("button[data-action]").forEach(function(b) {
+          b.addEventListener("click", function() {
+            const action = b.dataset.action;
+            dropdown.classList.remove("open");
+            if (action === "download-html") downloadHTML();
+            else if (action === "download-csv") downloadCSV();
+            else if (action === "print-pdf") window.print();
+          });
+        });
+      }
+
+      function downloadHTML() {
+        // Save a fresh copy of the current HTML document as a standalone file.
+        // This is the same deliverable the user is already viewing — they can
+        // email it, archive it, or save it to a project folder.
+        const doctype = "<!doctype html>\n";
+        const html = doctype + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        const titleEl = document.querySelector(".report-title-block h1");
+        const slug = (titleEl ? titleEl.textContent : "patent-landscape")
+          .replace(/[^a-zA-Z0-9]+/g, "-")
+          .replace(/^-|-$/g, "")
+          .toLowerCase()
+          .slice(0, 60);
+        link.download = `${slug}.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      function downloadCSV() {
+        // Build a CSV from the embedded records + metrics data.
+        // Fields chosen for defensibility: the same fields a patent attorney would
+        // include in a deliverable spreadsheet.
+        const records = REPORT.records || [];
+        if (!records.length) return;
+        const header = [
+          "publication_number", "title", "jurisdiction",
+          "application_year", "priority_year", "applicants", "url"
+        ];
+        const rows = [header.join(",")];
+        for (const r of records) {
+          const applicants = (r.applicants || []).join("; ");
+          const row = [
+            r.publication_number || "",
+            r.title || "",
+            r.jurisdiction || "",
+            r.application_year || "",
+            r.priority_year || "",
+            applicants,
+            r.url || "",
+          ].map(csvEscape).join(",");
+          rows.push(row);
+        }
+        const csvContent = rows.join("\r\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        const slug = (REPORT.query_spec && REPORT.query_spec.source_label || "patent-landscape")
+          .replace(/[^a-zA-Z0-9]+/g, "_").toLowerCase().slice(0, 60);
+        link.download = `patent-landscape_${slug}_${records.length}-records.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      function csvEscape(value) {
+        if (value == null) return "";
+        const s = String(value);
+        if (/[,"\r\n]/.test(s)) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      }
+
+      // ================================================================
+      // CLIENT-SIDE ANALYTICS ENGINE — interactive document-type filter
+      // ================================================================
+      // When the user toggles a filter pill, ALL metrics recompute from
+      // the full embedded record set, then every chart re-renders via
+      // setOption. This mirrors the Python analytics module in JS.
+
+      // Expand abbreviated record keys to readable names (once, on load)
+      const ALL_RECORDS = (REPORT.records || []).map(function(r) {
+        return {
+          publication_number: r.p || "",
+          title: r.t || "",
+          jurisdiction: r.j || "",
+          application_year: r.y || 0,
+          kind_code: r.k || "",
+          family_id: r.f || r.p || "",
+          applicants: r.a || [],
+          cpc_classes: r.c || [],
+          cited_by_count: r.ci || 0,
+          url: r.u || "",
+        };
+      });
+      const TOTAL_RECORD_COUNT = ALL_RECORDS.length;
+
+      function classifyDocType(kindCode) {
+        if (!kindCode) return "Unknown";
+        var k = kindCode.toUpperCase();
+        if (k.charAt(0) === "U" || k.charAt(0) === "Y") return "Utility model";
+        if (k.charAt(0) === "B") return "Granted patent";
+        if (k.charAt(0) === "A") return "Patent application";
+        if (k.charAt(0) === "S" || k.charAt(0) === "D") return "Design patent";
+        if (k.charAt(0) === "P") return "Plant patent";
+        return "Other";
+      }
+
+      // Classify every record once
+      ALL_RECORDS.forEach(function(r) {
+        r._docType = classifyDocType(r.kind_code);
+        recordById[r.publication_number] = r;
+      });
+
+      // Count doc types for the filter pills
+      function countDocTypes(records) {
+        var counts = {};
+        records.forEach(function(r) {
+          counts[r._docType] = (counts[r._docType] || 0) + 1;
+        });
+        return counts;
+      }
+
+      // Filing year (matches Python: application_year fallback to 0)
+      function filingYear(r) { return r.application_year || 0; }
+
+      // Family dedup: pick one record per family_id (earliest filing year)
+      function familyReps(records) {
+        var byFamily = {};
+        records.forEach(function(r) {
+          var fid = r.family_id;
+          var existing = byFamily[fid];
+          if (!existing || filingYear(r) < filingYear(existing)) {
+            byFamily[fid] = r;
+          }
+        });
+        return Object.values(byFamily);
+      }
+
+      // ---- Metric computations (mirrors analytics.py) ----
+
+      function computeTopApplicants(records, topN) {
+        topN = topN || 15;
+        var reps = familyReps(records);
+        var total = reps.length;
+        var counts = {};
+        var recIds = {};
+        reps.forEach(function(r) {
+          r.applicants.forEach(function(a) {
+            if (!a) return;
+            counts[a] = (counts[a] || 0) + 1;
+            (recIds[a] = recIds[a] || []).push(r.publication_number);
+          });
+        });
+        var ranked = Object.keys(counts).sort(function(a, b) {
+          return counts[b] - counts[a] || a.localeCompare(b);
+        }).slice(0, topN);
+        return ranked.map(function(name, i) {
+          return {
+            rank: i + 1, name: name,
+            family_count: counts[name],
+            share_pct: total ? Math.round(counts[name] / total * 1000) / 10 : 0,
+            share_label: total ? (counts[name] / total * 100).toFixed(1) + "%" : "0%",
+            record_ids: (recIds[name] || []).slice(0, 200),
+          };
+        });
+      }
+
+      function computeJurisdictionDistribution(records) {
+        var counts = {};
+        var recIds = {};
+        records.forEach(function(r) {
+          if (!r.jurisdiction) return;
+          counts[r.jurisdiction] = (counts[r.jurisdiction] || 0) + 1;
+          (recIds[r.jurisdiction] = recIds[r.jurisdiction] || []).push(r.publication_number);
+        });
+        var total = records.length;
+        var ranked = Object.keys(counts).sort(function(a, b) {
+          return counts[b] - counts[a] || a.localeCompare(b);
+        });
+        var REGIONAL = {EP:1, WO:1, EA:1, AP:1, OA:1, GC:1};
+        return ranked.map(function(code) {
+          return {
+            code: code, name: code, is_regional: !!REGIONAL[code],
+            count: counts[code],
+            share_pct: total ? Math.round(counts[code] / total * 1000) / 10 : 0,
+            share_label: total ? (counts[code] / total * 100).toFixed(1) + "%" : "0%",
+            record_ids: (recIds[code] || []).slice(0, 200),
+          };
+        });
+      }
+
+      function computeFilingTrends(records) {
+        var reps = familyReps(records);
+        var yearCounts = {};
+        reps.forEach(function(r) {
+          var y = filingYear(r);
+          if (y) yearCounts[y] = (yearCounts[y] || 0) + 1;
+        });
+        var years = Object.keys(yearCounts).map(Number).sort();
+        return { years: years, counts: years.map(function(y) { return yearCounts[y]; }) };
+      }
+
+      function computeTechAreas(records, topN) {
+        topN = topN || 15;
+        var reps = familyReps(records);
+        var total = reps.length;
+        var classFamilies = {};
+        var classRecIds = {};
+        reps.forEach(function(r) {
+          var seen = {};
+          r.cpc_classes.forEach(function(cls) {
+            if (!cls || seen[cls]) return;
+            seen[cls] = true;
+            classFamilies[cls] = (classFamilies[cls] || 0) + 1;
+            (classRecIds[cls] = classRecIds[cls] || []).push(r.publication_number);
+          });
+        });
+        var ranked = Object.keys(classFamilies).sort(function(a, b) {
+          return classFamilies[b] - classFamilies[a] || a.localeCompare(b);
+        }).slice(0, topN);
+        // CPC plain English lookup — use the Python-computed metric as reference
+        var origTech = (metric("technology_areas") || {}).value || [];
+        var cpcLookup = {};
+        origTech.forEach(function(row) { cpcLookup[row.code] = row.name; });
+        return ranked.map(function(code) {
+          return {
+            code: code,
+            name: cpcLookup[code] || code,
+            family_count: classFamilies[code],
+            share_pct: total ? Math.round(classFamilies[code] / total * 1000) / 10 : 0,
+            share_label: total ? (classFamilies[code] / total * 100).toFixed(1) + "%" : "0%",
+            record_ids: (classRecIds[code] || []).slice(0, 200),
+          };
+        });
+      }
+
+      // Spotlight views for Notable Patents
+      function computeSpotlight(records, view) {
+        var sorted, criterion;
+        if (view === "recent") {
+          sorted = records.slice().sort(function(a, b) { return (filingYear(b) || 0) - (filingYear(a) || 0) || a.publication_number.localeCompare(b.publication_number); });
+          criterion = "Most recent filings";
+        } else if (view === "top-applicant-recent") {
+          var topApps = computeTopApplicants(records, 5).map(function(r) { return r.name; });
+          var topSet = {};
+          topApps.forEach(function(a) { topSet[a] = true; });
+          var candidates = records.filter(function(r) {
+            return r.applicants.some(function(a) { return topSet[a]; });
+          });
+          sorted = candidates.sort(function(a, b) { return (filingYear(b) || 0) - (filingYear(a) || 0); });
+          criterion = "Top applicants\u2019 newest patents";
+        } else if (view === "foundational") {
+          sorted = records.slice().sort(function(a, b) { return (filingYear(a) || 9999) - (filingYear(b) || 9999) || a.publication_number.localeCompare(b.publication_number); });
+          criterion = "Foundational patents (earliest filings)";
+        } else if (view === "cross-disciplinary") {
+          sorted = records.slice().sort(function(a, b) { return (b.cpc_classes.length || 0) - (a.cpc_classes.length || 0); });
+          criterion = "Cross-disciplinary (most CPC subclasses)";
+        } else {
+          sorted = records.slice();
+          criterion = view;
+        }
+        var rows = sorted.slice(0, 10).map(function(r, i) {
+          return {
+            rank: i + 1,
+            publication_number: r.publication_number,
+            title: r.title || r.publication_number,
+            applicant: r.applicants[0] || "",
+            jurisdiction: r.jurisdiction,
+            year: filingYear(r),
+            cited_by_count: r.cited_by_count || 0,
+            url: r.url,
+            cpc_count: r.cpc_classes.length,
+          };
+        });
+        return { criterion: criterion, rows: rows, has_citations: rows.some(function(r) { return r.cited_by_count > 0; }) };
+      }
+
+      // ---- Filter state ----
+      var activeDocTypes = null; // null = all active (no filtering)
+      var currentSpotlightView = "recent";
+
+      function getFilteredRecords() {
+        if (!activeDocTypes) return ALL_RECORDS;
+        return ALL_RECORDS.filter(function(r) { return activeDocTypes[r._docType]; });
+      }
+
+      // ---- Render filter pills ----
+      function renderFilterBar() {
+        var allCounts = countDocTypes(ALL_RECORDS);
+        var types = Object.keys(allCounts).sort(function(a, b) { return allCounts[b] - allCounts[a]; });
+        var pillsEl = document.getElementById("filter-pills");
+        pillsEl.innerHTML = types.map(function(type) {
+          var isActive = !activeDocTypes || activeDocTypes[type];
+          return "<button class='filter-pill" + (isActive ? " active" : "") + "' data-type='" +
+            escapeHtml(type) + "'>" + escapeHtml(type) +
+            " <span class='pill-count'>(" + allCounts[type].toLocaleString() + ")</span></button>";
+        }).join("");
+
+        // Wire click handlers
+        pillsEl.querySelectorAll(".filter-pill").forEach(function(pill) {
+          pill.addEventListener("click", function() {
+            var type = pill.dataset.type;
+            // Initialize activeDocTypes if first toggle
+            if (!activeDocTypes) {
+              activeDocTypes = {};
+              types.forEach(function(t) { activeDocTypes[t] = true; });
+            }
+            activeDocTypes[type] = !activeDocTypes[type];
+            // If all toggled off, reset to all on
+            if (!Object.values(activeDocTypes).some(Boolean)) {
+              activeDocTypes = null;
+            }
+            refilterAndRender();
+          });
+        });
+
+        updateFilterSummary();
+      }
+
+      function updateFilterSummary() {
+        var filtered = getFilteredRecords();
+        var summaryEl = document.getElementById("filter-summary");
+        var resetEl = document.getElementById("filter-reset");
+        if (!activeDocTypes || filtered.length === TOTAL_RECORD_COUNT) {
+          summaryEl.innerHTML = "Showing all <strong>" + TOTAL_RECORD_COUNT.toLocaleString() + "</strong> records";
+          resetEl.style.display = "none";
+        } else {
+          summaryEl.innerHTML = "Showing <strong>" + filtered.length.toLocaleString() +
+            "</strong> of " + TOTAL_RECORD_COUNT.toLocaleString();
+          resetEl.style.display = "inline";
+        }
+      }
+
+      // ---- Master re-render ----
+      function refilterAndRender() {
+        var records = getFilteredRecords();
+
+        // Update filter UI
+        renderFilterBar();
+
+        // Rebuild the record lookup for drill-downs
+        for (var key in recordById) delete recordById[key];
+        records.forEach(function(r) { recordById[r.publication_number] = r; });
+
+        // Recompute headline stats
+        var reps = familyReps(records);
+        var uniqueApplicants = {};
+        reps.forEach(function(r) { r.applicants.forEach(function(a) { if (a) uniqueApplicants[a] = true; }); });
+        var uniqueJuris = {};
+        records.forEach(function(r) { if (r.jurisdiction) uniqueJuris[r.jurisdiction] = true; });
+        document.getElementById("stat-families").textContent = reps.length.toLocaleString();
+        document.getElementById("stat-applicants").textContent = Object.keys(uniqueApplicants).length.toLocaleString();
+        document.getElementById("stat-jurisdictions").textContent = Object.keys(uniqueJuris).length.toLocaleString();
+        var yearCounts = {};
+        reps.forEach(function(r) { var y = filingYear(r); if (y) yearCounts[y] = (yearCounts[y] || 0) + 1; });
+        var peakYear = 0, peakCount = 0;
+        Object.keys(yearCounts).forEach(function(y) {
+          if (yearCounts[y] > peakCount) { peakYear = +y; peakCount = yearCounts[y]; }
+        });
+        document.getElementById("stat-peak").textContent = peakYear ? peakYear.toLocaleString() : "\u2014";
+
+        // Re-render top applicants chart
+        var topApp = computeTopApplicants(records, 15).reverse();
+        if (charts.top_applicants && topApp.length) {
+          charts.top_applicants.setOption({
+            yAxis: { data: topApp.map(function(r) { return r.name; }) },
+            series: [{ data: topApp.map(function(r) {
+              return { value: r.family_count, itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  { offset: 0, color: "#0062b8" }, { offset: 1, color: "#4ea5e0" }]),
+              }};
+            }) }],
+          });
+          // Rebind click handler
+          charts.top_applicants.off("click");
+          charts.top_applicants.on("click", function(params) {
+            var row = topApp[params.dataIndex];
+            if (row) openDrillDown({ title: row.name, subtitle: row.family_count + " families (" + row.share_label + ")", recordIds: row.record_ids });
+          });
+        }
+
+        // Re-render filing trends
+        var trends = computeFilingTrends(records);
+        if (charts.filing_trends && trends.years.length) {
+          charts.filing_trends.setOption({
+            xAxis: { data: trends.years },
+            series: [{ data: trends.counts }],
+          });
+        }
+
+        // Re-render technology areas
+        var tech = computeTechAreas(records, 15).reverse();
+        if (charts.technology_areas && tech.length) {
+          charts.technology_areas.setOption({
+            yAxis: { data: tech.map(function(r) { return r.name; }) },
+            series: [{ data: tech.map(function(r) {
+              return { value: r.family_count, itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  { offset: 0, color: "#7c3aed" }, { offset: 1, color: "#a78bfa" }]),
+              }};
+            }) }],
+          });
+          charts.technology_areas.off("click");
+          charts.technology_areas.on("click", function(params) {
+            var row = tech[params.dataIndex];
+            if (row) openDrillDown({ title: row.name + " (" + row.code + ")", subtitle: row.family_count + " families (" + row.share_label + ")", recordIds: row.record_ids });
+          });
+        }
+
+        // Re-render jurisdiction bars
+        var juris = computeJurisdictionDistribution(records).reverse();
+        if (charts.jurisdiction_bars && juris.length) {
+          charts.jurisdiction_bars.setOption({
+            yAxis: { data: juris.map(function(r) { return r.name + (r.is_regional ? " (regional)" : ""); }) },
+            series: [{ data: juris.map(function(r) {
+              return { value: r.count, itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  { offset: 0, color: "#0d9488" }, { offset: 1, color: "#14b8a6" }]),
+              }};
+            }) }],
+          });
+          charts.jurisdiction_bars.off("click");
+          charts.jurisdiction_bars.on("click", function(params) {
+            var row = juris[params.dataIndex];
+            if (row) openDrillDown({ title: row.name, subtitle: row.count + " filings (" + row.share_label + ")", recordIds: row.record_ids });
+          });
+        }
+
+        // Re-render notable/spotlight
+        refilterSpotlight();
+      }
+
+      function refilterSpotlight() {
+        var records = getFilteredRecords();
+        var data = computeSpotlight(records, currentSpotlightView);
+        document.getElementById("notable-criterion").textContent = "Showing: " + data.criterion;
+        var tbody = document.getElementById("notable-tbody");
+        var lastColHeader = data.rows.some(function(r) { return r.cpc_count > 0 && currentSpotlightView === "cross-disciplinary"; })
+          ? "CPC" : "CITES";
+        tbody.innerHTML = data.rows.map(function(row) {
+          var link = row.url
+            ? "<a href='" + escapeHtml(row.url) + "' target='_blank' rel='noopener'>" + escapeHtml(row.publication_number) + "</a>"
+            : escapeHtml(row.publication_number);
+          var lastCol = currentSpotlightView === "cross-disciplinary" ? row.cpc_count : (row.cited_by_count || 0);
+          return "<tr>" +
+            "<td class='col-rank'>" + row.rank + "</td>" +
+            "<td class='col-title'>" +
+              "<div style='font-weight:500'>" + escapeHtml(row.title || row.publication_number) + "</div>" +
+              "<div style='font-size:11px;color:#a0aec0;margin-top:2px'>" + link + " \u00b7 " + escapeHtml(row.jurisdiction || "") + "</div>" +
+            "</td>" +
+            "<td class='col-applicant'>" + escapeHtml(row.applicant || "") + "</td>" +
+            "<td class='col-year'>" + (row.year || "\u2014") + "</td>" +
+            "<td class='col-count'>" + lastCol + "</td>" +
+          "</tr>";
+        }).join("");
+      }
+
+      // ---- Wire up on load ----
+      function wireUpFilterAndSpotlight() {
+        renderFilterBar();
+        document.getElementById("filter-reset").addEventListener("click", function() {
+          activeDocTypes = null;
+          refilterAndRender();
+        });
+
+        var select = document.getElementById("spotlight-select");
+        if (select) {
+          select.addEventListener("change", function() {
+            currentSpotlightView = select.value;
+            refilterSpotlight();
+          });
+          // Render initial spotlight view
+          currentSpotlightView = select.value;
+          refilterSpotlight();
+        }
+      }
+
+      // ===== Utils =====
+      function escapeHtml(s) {
+        if (s == null) return "";
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+    })();
+  </script>
+</body>
+</html>

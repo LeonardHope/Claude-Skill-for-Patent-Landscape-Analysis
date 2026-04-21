@@ -1,0 +1,21 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+.venv
+venv
+.env
+*.egg-info
+
+# Vendor files downloaded at setup time (too large for git)
+skill/vendor/*.js
+skill/vendor/*.geojson
+skill/vendor/*.json
+
+# Generated reports (run-specific, not tracked)
+reports/*.html
