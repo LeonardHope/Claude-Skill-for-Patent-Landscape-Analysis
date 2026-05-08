@@ -303,9 +303,14 @@ def render_report(
         bundle=report_data,
     )
 
-    # Resolve output path
+    # Resolve output path. Treat the path as a directory if either it already
+    # exists as one, OR it doesn't have an .html suffix (covers the common case
+    # where the caller passes Path("reports") on a fresh checkout where the
+    # directory doesn't yet exist — without this, the file would be written
+    # AS "reports" rather than INTO "reports/").
     output_path = Path(output_path)
-    if output_path.is_dir():
+    if output_path.is_dir() or output_path.suffix.lower() != ".html":
+        output_path.mkdir(parents=True, exist_ok=True)
         slug = _slugify(query_label)
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M")
         output_path = output_path / f"patent-landscape_{slug}_{timestamp}.html"
